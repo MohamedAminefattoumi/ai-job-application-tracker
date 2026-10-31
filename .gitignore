@@ -1,0 +1,50 @@
+# Environment variables & secrets (NEVER COMMIT)
+.env
+.env.*
+!.env.example
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python bytecode & caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Packaging / build
+build/
+dist/
+*.egg-info/
+
+# Credentials & keys
+*client_secret*.json
+*service_account*.json
+*credentials*.json
+*.pem
+*.key
+
+# Databases & local dumps
+*.db
+*.sqlite
+*.sqlite3
+*.sql.gz
+
+# IDEs & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini

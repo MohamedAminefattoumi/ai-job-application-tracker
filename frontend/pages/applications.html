@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JobTrack — Applications</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="../index.html"><span class="brand-mark">J</span><span>jobtrack</span></a>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="side-nav">
+        <a class="nav-link" href="../index.html"><span class="nav-icon">▦</span> Overview</a>
+        <a class="nav-link active" href="applications.html"><span class="nav-icon">▤</span> Applications</a>
+      </nav>
+      <div class="sidebar-bottom"><div class="profile-avatar">MA</div><div><strong>My workspace</strong><small>Personal tracker</small></div></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div><span class="eyebrow">WORKSPACE / TRACKER</span><h1>Applications</h1></div>
+        <button class="button button-primary" id="add-button">＋ Add application</button>
+      </header>
+      <section class="welcome-row compact-welcome">
+        <div><h2>All opportunities</h2><p>Manage and update your application pipeline.</p></div>
+        <div class="count-chip"><strong id="list-count">—</strong> applications</div>
+      </section>
+
+      <section class="content-card">
+        <div class="toolbar">
+          <div class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search company or position…"></div>
+          <select id="status-filter" class="filter-select" aria-label="Filter by status">
+            <option value="">All statuses</option><option value="PENDING">Pending</option><option value="INTERVIEW">Interview</option><option value="REJECTED">Rejected</option><option value="OFFER_RECEIVED">Offer received</option><option value="UNKNOWN">Unknown</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table><thead><tr><th>COMPANY & ROLE</th><th>STATUS</th><th>LAST EMAIL</th><th class="actions-heading">ACTIONS</th></tr></thead><tbody id="applications-table"><tr><td colspan="4" class="loading-cell">Loading applications…</td></tr></tbody></table>
+        </div>
+      </section>
+      <p class="footer-note">Changes are saved directly to your FastAPI backend.</p>
+    </main>
+  </div>
+
+  <dialog id="application-dialog" class="app-dialog">
+    <form id="application-form">
+      <div class="dialog-heading"><div><span class="eyebrow">APPLICATION DETAILS</span><h2 id="dialog-title">Add application</h2></div><button type="button" class="icon-button" id="close-dialog" aria-label="Close">×</button></div>
+      <input type="hidden" id="application-id">
+      <label>Company<input id="company" maxlength="150" required placeholder="e.g. Example GmbH"></label>
+      <label>Position<input id="position" maxlength="200" required placeholder="e.g. Working Student Developer"></label>
+      <label>Summary<textarea id="summary" rows="3" placeholder="Notes about this application…"></textarea></label>
+      <div class="form-grid">
+        <label>Status<select id="status"><option value="PENDING">Pending</option><option value="INTERVIEW">Interview</option><option value="REJECTED">Rejected</option><option value="OFFER_RECEIVED">Offer received</option><option value="UNKNOWN">Unknown</option></select></label>
+        <label>Email category<select id="email-category"><option value="">Not specified</option><option value="APPLICATION_RECEIVED">Application received</option><option value="INTERVIEW_INVITATION">Interview invitation</option><option value="INTERVIEW_CONFIRMED">Interview confirmed</option><option value="REJECTION">Rejection</option><option value="OFFER_RECEIVED">Offer received</option><option value="OTHER">Other</option><option value="UNKNOWN">Unknown</option></select></label>
+      </div>
+      <div class="form-grid">
+        <label>Interview date<input id="interview-date" type="date"></label>
+        <label>Interview time<input id="interview-time" type="time"></label>
+      </div>
+      <label>Confidence (0–1)<input id="confidence" type="number" min="0" max="1" step="0.01" placeholder="e.g. 0.95"></label>
+      <div class="dialog-actions"><button type="button" class="button button-ghost" id="cancel-dialog">Cancel</button><button type="submit" class="button button-primary" id="save-button">Save application</button></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/applications.js"></script>
+</body>
+</html>

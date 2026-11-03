@@ -35,7 +35,7 @@
         <div class="toolbar">
           <div class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search company or position…"></div>
           <select id="status-filter" class="filter-select" aria-label="Filter by status">
-            <option value="">All statuses</option><option value="PENDING">Pending</option><option value="INTERVIEW">Interview</option><option value="REJECTED">Rejected</option><option value="OFFER_RECEIVED">Offer received</option><option value="UNKNOWN">Unknown</option>
+            <option value="">All statuses</option><option value="PENDING">Pending</option><option value="INTERVIEW">Interview</option><option value="INTERVIEW_CONFIRMED">Interview confirmed</option><option value="REJECTED">Rejected</option><option value="OFFER_RECEIVED">Offer received</option><option value="UNKNOWN">Unknown</option>
           </select>
         </div>
         <div class="table-wrap">
@@ -54,7 +54,7 @@
       <label>Position<input id="position" maxlength="200" required placeholder="e.g. Working Student Developer"></label>
       <label>Summary<textarea id="summary" rows="3" placeholder="Notes about this application…"></textarea></label>
       <div class="form-grid">
-        <label>Status<select id="status"><option value="PENDING">Pending</option><option value="INTERVIEW">Interview</option><option value="REJECTED">Rejected</option><option value="OFFER_RECEIVED">Offer received</option><option value="UNKNOWN">Unknown</option></select></label>
+        <label>Status<select id="status"><option value="PENDING">Pending</option><option value="INTERVIEW">Interview</option><option value="INTERVIEW_CONFIRMED">Interview confirmed</option><option value="REJECTED">Rejected</option><option value="OFFER_RECEIVED">Offer received</option><option value="UNKNOWN">Unknown</option></select></label>
         <label>Email category<select id="email-category"><option value="">Not specified</option><option value="APPLICATION_RECEIVED">Application received</option><option value="INTERVIEW_INVITATION">Interview invitation</option><option value="INTERVIEW_CONFIRMED">Interview confirmed</option><option value="REJECTION">Rejection</option><option value="OFFER_RECEIVED">Offer received</option><option value="OTHER">Other</option><option value="UNKNOWN">Unknown</option></select></label>
       </div>
       <div class="form-grid">

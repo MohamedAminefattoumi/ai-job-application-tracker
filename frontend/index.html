@@ -27,19 +27,20 @@
     <main class="main-content">
       <header class="topbar">
         <div><span class="eyebrow">WORKSPACE / OVERVIEW</span><h1>Dashboard</h1></div>
-        <a class="button button-primary" href="pages/applications.html#new">＋ Add application</a>
+        <div style="display:flex;gap:9px;flex-wrap:wrap"><button class="button button-ghost" id="sync-button">↻ Sync inbox</button><a class="button button-primary" href="pages/applications.html#new">＋ Add application</a></div>
       </header>
 
       <section class="welcome-row">
-        <div><h2>Your job search, <span>in focus.</span></h2><p>Keep track of every opportunity and your next step.</p></div>
+        <div><h2>A clearer view of <span>what’s next.</span></h2><p>One calm place to follow every opportunity.</p></div>
         <div class="date-chip" id="today-date">—</div>
       </section>
 
       <section class="stats-grid" aria-label="Application statistics">
-        <article class="stat-card"><div class="stat-top"><span>Total applications</span><span class="stat-icon violet">▤</span></div><strong id="total-count">—</strong><small>All tracked opportunities</small></article>
+        <article class="stat-card"><div class="stat-top"><span>Total applications</span><span class="stat-icon forest">▤</span></div><strong id="total-count">—</strong><small>All tracked opportunities</small></article>
         <article class="stat-card"><div class="stat-top"><span>Pending</span><span class="stat-icon amber">◷</span></div><strong id="pending-count">—</strong><small>Waiting for a response</small></article>
         <article class="stat-card"><div class="stat-top"><span>Interviews</span><span class="stat-icon blue">▣</span></div><strong id="interview-count">—</strong><small>Interview stage</small></article>
-        <article class="stat-card"><div class="stat-top"><span>Offers</span><span class="stat-icon green">✦</span></div><strong id="offer-count">—</strong><small>Offers received</small></article>
+        <article class="stat-card"><div class="stat-top"><span>Offers</span><span class="stat-icon red">✦</span></div><strong id="offer-count">—</strong><small>Offers received</small></article>
+        <article class="stat-card"><div class="stat-top"><span>Rejections</span><span class="stat-icon red">—</span></div><strong id="rejected-count">—</strong><small>Closed applications</small></article>
       </section>
 
       <section class="content-card">

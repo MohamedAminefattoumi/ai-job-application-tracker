@@ -34,7 +34,8 @@ const applicationsApi = {
     method: "PATCH",
     body: JSON.stringify(data)
   }),
-  remove: (id) => apiRequest(`/applications/${id}`, { method: "DELETE" })
+  remove: (id) => apiRequest(`/applications/${id}`, { method: "DELETE" }),
+  sync: () => apiRequest("/applications/sync", { method: "POST" })
 };
 
 function showToast(message, isError = false) {
@@ -58,6 +59,7 @@ function statusLabel(status) {
   const labels = {
     PENDING: "Pending",
     INTERVIEW: "Interview",
+    INTERVIEW_CONFIRMED: "Interview confirmed",
     REJECTED: "Rejected",
     OFFER_RECEIVED: "Offer received",
     UNKNOWN: "Unknown"

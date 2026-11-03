@@ -1,4 +1,7 @@
-document.addEventListener("DOMContentLoaded", loadDashboard);
+document.addEventListener("DOMContentLoaded", () => {
+  loadDashboard();
+  document.getElementById("sync-button")?.addEventListener("click", syncApplications);
+});
 
 async function loadDashboard() {
   document.getElementById("today-date").textContent = new Intl.DateTimeFormat("en-GB", {
@@ -12,6 +15,7 @@ async function loadDashboard() {
     document.getElementById("pending-count").textContent = items.filter(x => x.status === "PENDING").length;
     document.getElementById("interview-count").textContent = items.filter(x => x.status === "INTERVIEW").length;
     document.getElementById("offer-count").textContent = items.filter(x => x.status === "OFFER_RECEIVED").length;
+    document.getElementById("rejected-count").textContent = items.filter(x => x.status === "REJECTED").length;
 
     const recent = items.slice(0, 5);
     const tbody = document.getElementById("recent-applications");
@@ -32,4 +36,19 @@ function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   })[char]);
+}
+
+async function syncApplications() {
+  const button = document.getElementById("sync-button");
+  if (!button) return;
+  button.disabled = true; button.textContent = "↻ Syncing…";
+  try {
+    await applicationsApi.sync();
+    showToast("Inbox synchronization completed.");
+    await loadDashboard();
+  } catch (error) {
+    showToast(error.message || "Synchronization failed.", true);
+  } finally {
+    button.disabled = false; button.textContent = "↻ Sync inbox";
+  }
 }

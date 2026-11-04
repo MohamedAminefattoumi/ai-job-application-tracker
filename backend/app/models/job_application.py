@@ -1,5 +1,5 @@
-
 from datetime import date, datetime, time
+from typing import TYPE_CHECKING
 
 from sqlalchemy import (
     CheckConstraint,
@@ -12,9 +12,12 @@ from sqlalchemy import (
     Time,
     func,
 )
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
+
+if TYPE_CHECKING:
+    from app.models.application_activity import ApplicationActivity
 
 
 class JobApplication(Base):
@@ -104,4 +107,11 @@ class JobApplication(Base):
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False,
+    )
+
+    # Activity history (ordered chronologically, oldest to newest)
+    activities: Mapped[list["ApplicationActivity"]] = relationship(
+        back_populates="application",
+        cascade="all, delete-orphan",
+        order_by="ApplicationActivity.event_at.asc(), ApplicationActivity.id.asc()",
     )

@@ -39,16 +39,32 @@
           </select>
         </div>
         <div class="table-wrap">
-          <table><thead><tr><th>COMPANY & ROLE</th><th>STATUS</th><th>LAST EMAIL</th><th class="actions-heading">ACTIONS</th></tr></thead><tbody id="applications-table"><tr><td colspan="4" class="loading-cell">Loading applications…</td></tr></tbody></table>
+          <table>
+            <thead>
+              <tr>
+                <th>COMPANY</th>
+                <th>POSITION</th>
+                <th>STATUS</th>
+                <th>INTERVIEW DATE</th>
+                <th>INTERVIEW TIME</th>
+                <th>LAST UPDATED</th>
+                <th class="actions-heading">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="applications-table">
+              <tr><td colspan="7" class="loading-cell">Loading applications…</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
       <p class="footer-note">Changes are saved directly to your FastAPI backend.</p>
     </main>
   </div>
 
+  <!-- Create / Edit Application Modal -->
   <dialog id="application-dialog" class="app-dialog">
     <form id="application-form">
-      <div class="dialog-heading"><div><span class="eyebrow">APPLICATION DETAILS</span><h2 id="dialog-title">Add application</h2></div><button type="button" class="icon-button" id="close-dialog" aria-label="Close">×</button></div>
+      <div class="dialog-heading"><div><span class="eyebrow">APPLICATION FORM</span><h2 id="dialog-title">Add application</h2></div><button type="button" class="icon-button" id="close-dialog" aria-label="Close">×</button></div>
       <input type="hidden" id="application-id">
       <label>Company<input id="company" maxlength="150" required placeholder="e.g. Example GmbH"></label>
       <label>Position<input id="position" maxlength="200" required placeholder="e.g. Working Student Developer"></label>
@@ -65,6 +81,65 @@
       <div class="dialog-actions"><button type="button" class="button button-ghost" id="cancel-dialog">Cancel</button><button type="submit" class="button button-primary" id="save-button">Save application</button></div>
     </form>
   </dialog>
+
+  <!-- Application Details & Activity History Modal -->
+  <dialog id="details-dialog" class="app-dialog details-dialog">
+    <div class="details-shell">
+      <div class="dialog-heading">
+        <div>
+          <span class="eyebrow">APPLICATION DETAILS</span>
+          <h2 data-detail-company>—</h2>
+          <p class="detail-subtitle" data-detail-position>—</p>
+        </div>
+        <div class="detail-header-right">
+          <span class="status-badge" data-detail-status>—</span>
+          <button type="button" class="icon-button" id="close-details-dialog" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <div class="details-section">
+        <h3 class="details-section-title">Application Summary</h3>
+        <p class="details-summary-box" data-detail-summary>—</p>
+      </div>
+
+      <div class="details-columns">
+        <div class="details-section">
+          <h3 class="details-section-title">Interview Information</h3>
+          <dl class="details-grid">
+            <div><dt>Interview Date</dt><dd data-detail-interview-date>—</dd></div>
+            <div><dt>Interview Time</dt><dd data-detail-interview-time>—</dd></div>
+          </dl>
+          <p class="details-note" data-detail-interview-note></p>
+        </div>
+
+        <div class="details-section">
+          <h3 class="details-section-title">Metadata & Classification</h3>
+          <dl class="details-grid">
+            <div><dt>Email Category</dt><dd data-detail-category>—</dd></div>
+            <div><dt>AI Confidence</dt><dd data-detail-confidence>—</dd></div>
+            <div><dt>Created At</dt><dd data-detail-created>—</dd></div>
+            <div><dt>Last Updated</dt><dd data-detail-updated>—</dd></div>
+            <div><dt>Last Email Received</dt><dd data-detail-last-email>—</dd></div>
+            <div><dt>Application Key</dt><dd class="mono-value" data-detail-key>—</dd></div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="details-section">
+        <div class="timeline-section-header">
+          <h3 class="details-section-title">Activity History</h3>
+          <span class="eyebrow">CHRONOLOGICAL TIMELINE</span>
+        </div>
+        <div data-detail-timeline></div>
+      </div>
+
+      <div class="dialog-actions">
+        <button type="button" class="button button-ghost" id="edit-from-details-button">Edit application</button>
+        <button type="button" class="button button-primary" id="done-details-button">Close</button>
+      </div>
+    </div>
+  </dialog>
+
   <div id="toast" class="toast" role="status"></div>
   <script src="../assets/js/api.js"></script>
   <script src="../assets/js/applications.js"></script>

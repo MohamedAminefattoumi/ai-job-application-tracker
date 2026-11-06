@@ -27,7 +27,10 @@
     <main class="main-content">
       <header class="topbar">
         <div><span class="eyebrow">WORKSPACE / OVERVIEW</span><h1>Dashboard</h1></div>
-        <div style="display:flex;gap:9px;flex-wrap:wrap"><button class="button button-ghost" id="sync-button">↻ Sync inbox</button><a class="button button-primary" href="pages/applications.html#new">＋ Add application</a></div>
+        <div class="topbar-actions">
+          <button class="button button-ghost" id="sync-button" type="button">↻ Refresh data</button>
+          <a class="button button-primary" href="pages/applications.html#new">＋ Add application</a>
+        </div>
       </header>
 
       <section class="welcome-row">
@@ -39,19 +42,93 @@
         <article class="stat-card"><div class="stat-top"><span>Total applications</span><span class="stat-icon forest">▤</span></div><strong id="total-count">—</strong><small>All tracked opportunities</small></article>
         <article class="stat-card"><div class="stat-top"><span>Pending</span><span class="stat-icon amber">◷</span></div><strong id="pending-count">—</strong><small>Waiting for a response</small></article>
         <article class="stat-card"><div class="stat-top"><span>Interviews</span><span class="stat-icon blue">▣</span></div><strong id="interview-count">—</strong><small>Interview stage</small></article>
-        <article class="stat-card"><div class="stat-top"><span>Offers</span><span class="stat-icon red">✦</span></div><strong id="offer-count">—</strong><small>Offers received</small></article>
+        <article class="stat-card"><div class="stat-top"><span>Offers</span><span class="stat-icon forest">✦</span></div><strong id="offer-count">—</strong><small>Offers received</small></article>
         <article class="stat-card"><div class="stat-top"><span>Rejections</span><span class="stat-icon red">—</span></div><strong id="rejected-count">—</strong><small>Closed applications</small></article>
       </section>
 
       <section class="content-card">
-        <div class="section-heading"><div><h3>Recent applications</h3><p>Your latest job opportunities</p></div><a class="text-link" href="pages/applications.html">View all <span>→</span></a></div>
+        <div class="section-heading"><div><h3>Recent applications</h3><p>Your latest job opportunities and scheduled interviews</p></div><a class="text-link" href="pages/applications.html">View all <span>→</span></a></div>
         <div class="table-wrap">
-          <table><thead><tr><th>COMPANY & ROLE</th><th>STATUS</th><th>LAST UPDATE</th></tr></thead><tbody id="recent-applications"><tr><td colspan="3" class="loading-cell">Loading applications…</td></tr></tbody></table>
+          <table>
+            <thead>
+              <tr>
+                <th>COMPANY</th>
+                <th>POSITION</th>
+                <th>STATUS</th>
+                <th>INTERVIEW DATE</th>
+                <th>INTERVIEW TIME</th>
+                <th>LAST UPDATED</th>
+                <th class="actions-heading">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="recent-applications">
+              <tr><td colspan="7" class="loading-cell">Loading applications…</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
       <p class="footer-note">JobTrack · Personal application tracker</p>
     </main>
   </div>
+
+  <!-- Application Details & Activity History Modal -->
+  <dialog id="details-dialog" class="app-dialog details-dialog">
+    <div class="details-shell">
+      <div class="dialog-heading">
+        <div>
+          <span class="eyebrow">APPLICATION DETAILS</span>
+          <h2 data-detail-company>—</h2>
+          <p class="detail-subtitle" data-detail-position>—</p>
+        </div>
+        <div class="detail-header-right">
+          <span class="status-badge" data-detail-status>—</span>
+          <button type="button" class="icon-button" id="close-details-dialog" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <div class="details-section">
+        <h3 class="details-section-title">Application Summary</h3>
+        <p class="details-summary-box" data-detail-summary>—</p>
+      </div>
+
+      <div class="details-columns">
+        <div class="details-section">
+          <h3 class="details-section-title">Interview Information</h3>
+          <dl class="details-grid">
+            <div><dt>Interview Date</dt><dd data-detail-interview-date>—</dd></div>
+            <div><dt>Interview Time</dt><dd data-detail-interview-time>—</dd></div>
+          </dl>
+          <p class="details-note" data-detail-interview-note></p>
+        </div>
+
+        <div class="details-section">
+          <h3 class="details-section-title">Metadata & Classification</h3>
+          <dl class="details-grid">
+            <div><dt>Email Category</dt><dd data-detail-category>—</dd></div>
+            <div><dt>AI Confidence</dt><dd data-detail-confidence>—</dd></div>
+            <div><dt>Created At</dt><dd data-detail-created>—</dd></div>
+            <div><dt>Last Updated</dt><dd data-detail-updated>—</dd></div>
+            <div><dt>Last Email Received</dt><dd data-detail-last-email>—</dd></div>
+            <div><dt>Application Key</dt><dd class="mono-value" data-detail-key>—</dd></div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="details-section">
+        <div class="timeline-section-header">
+          <h3 class="details-section-title">Activity History</h3>
+          <span class="eyebrow">CHRONOLOGICAL TIMELINE</span>
+        </div>
+        <div data-detail-timeline></div>
+      </div>
+
+      <div class="dialog-actions">
+        <a class="button button-ghost" id="manage-in-applications-link" href="pages/applications.html">Manage in Applications</a>
+        <button type="button" class="button button-primary" id="done-details-button">Close</button>
+      </div>
+    </div>
+  </dialog>
+
   <div id="toast" class="toast" role="status"></div>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/dashboard.js"></script>

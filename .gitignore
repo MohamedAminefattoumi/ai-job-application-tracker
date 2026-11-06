@@ -1,50 +1,82 @@
-# Environment variables & secrets (NEVER COMMIT)
+
 .env
 .env.*
 !.env.example
+*.env
 
-# Python virtual environments
+
+*client_secret*.json
+*service_account*.json
+*credentials*.json
+*secret*.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+
+
 .venv/
 venv/
 env/
 ENV/
+backend/.venv/
 
-# Python bytecode & caches
+# Python bytecode & build artifacts
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
+*.egg
+*.egg-info/
+dist/
+build/
+wheels/
+pip-wheel-metadata/
+
+# Testing, linting & type-checking caches
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.hypothesis/
 .coverage
+.coverage.*
 htmlcov/
+pytestdebug.log
 
-# Packaging / build
-build/
-dist/
-*.egg-info/
 
-# Credentials & keys
-*client_secret*.json
-*service_account*.json
-*credentials*.json
-*.pem
-*.key
-
-# Databases & local dumps
 *.db
 *.sqlite
 *.sqlite3
 *.sql.gz
+*.dump
+postgres_data/
 
-# IDEs & Editors
+
+.n8n/
+n8n_data/
+
+
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.bak
+
+
 .vscode/
 .idea/
+*.iml
 *.swp
 *.swo
+*~
 
-# OS generated files
+
 .DS_Store
+.DS_Store?
+._*
 Thumbs.db
+ehthumbs.db
 desktop.ini
+$RECYCLE.BIN/

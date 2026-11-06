@@ -1,0 +1,248 @@
+{
+  "name": "Interview Reminder Notifications",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -304,
+        -416
+      ],
+      "id": "7a9a664e-8565-44e3-80c9-2bc49db3da5d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n    id,\n    company,\n    position,\n    status,\n    interview_date,\n    interview_time\nFROM job_applications\nWHERE status IN ('INTERVIEW', 'INTERVIEW_CONFIRMED')\n  AND interview_date IS NOT NULL\n  AND interview_time IS NOT NULL\n  AND (\n      (interview_date + interview_time) > NOW()\n  );",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        -80,
+        -416
+      ],
+      "id": "1e9bee83-cf98-4047-889f-66bfeeced67b",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Y8EP6u0DBBdeAYYp",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst applications = $input.all();\nconst now = Date.now();\n\nconst reminders = [];\n\nfunction getBerlinOffset(date) {\n    const parts = new Intl.DateTimeFormat('en-US', {\n        timeZone: 'Europe/Berlin',\n        timeZoneName: 'longOffset'\n    }).formatToParts(date);\n\n    return parts.find(p => p.type === 'timeZoneName').value\n        .replace('GMT', '');\n}\n\nfor (const item of applications) {\n    const app = item.json;\n\n    if (!app.interview_date || !app.interview_time) {\n        continue;\n    }\n\n    const localDateTime =\n        `${app.interview_date}T${app.interview_time}`;\n\n    // Initial estimate to determine Berlin's UTC offset\n    let interviewDateTime = new Date(localDateTime + '+01:00');\n\n    let offset = getBerlinOffset(interviewDateTime);\n\n    interviewDateTime = new Date(localDateTime + offset);\n\n    // Recheck offset in case the date crosses a DST boundary\n    offset = getBerlinOffset(interviewDateTime);\n    interviewDateTime = new Date(localDateTime + offset);\n\n    const interviewTimestamp = interviewDateTime.getTime();\n\n    if (!Number.isFinite(interviewTimestamp)) {\n        continue;\n    }\n\n    const hoursUntilInterview =\n        (interviewTimestamp - now) / 3600000;\n\n    // 24-hour reminder: due between 24h and 23h55 before interview\n    if (hoursUntilInterview <= 24 &&\n        hoursUntilInterview > 23.9166667) {\n\n        reminders.push({\n            json: {\n                ...app,\n                reminder_type: '24H',\n                hours_until_interview: hoursUntilInterview\n            }\n        });\n    }\n\n    // 1-hour reminder: due between 1h and 55 minutes before interview\n    if (hoursUntilInterview <= 1 &&\n        hoursUntilInterview > 0.9166667) {\n\n        reminders.push({\n            json: {\n                ...app,\n                reminder_type: '1H',\n                hours_until_interview: hoursUntilInterview\n            }\n        });\n    }\n}\n\nreturn reminders;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        144,
+        -416
+      ],
+      "id": "b0c23a0f-db24-4f00-964d-4a8c0d0195c5",
+      "name": "Determine Required Reminders",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "0b657bbf-d3e9-4a51-b6f0-1802533d197a",
+              "leftValue": "={{ $json.already_sent }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        592,
+        -416
+      ],
+      "id": "0910547a-f204-4d9e-afe5-ba21ad4bc386",
+      "name": "Reminder Not sent"
+    },
+    {
+      "parameters": {
+        "sendTo": "medfattoumi2@gmail.com",
+        "subject": "={{ $json.reminder_type === '24H' ? 'Interview Reminder - Tomorrow' : 'Interview Reminder - In 1 Hour' }}",
+        "emailType": "text",
+        "message": "=Hello,  This is an automatic reminder about your upcoming job interview.  Company: {{ $json.company }} Position: {{ $json.position }} Date: {{ $json.interview_date }} Time: {{ $json.interview_time }}  Reminder: {{ $json.reminder_type }}  Good luck with your interview!  AI Job Application Tracker",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        -416
+      ],
+      "id": "ccc021be-1ec4-4524-8f2a-757d55f5d2a1",
+      "name": "Send a message",
+      "webhookId": "06356c60-70b1-4ca1-bd8d-7ed8c4f1d501",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wenVkigtpBCeOZXB",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO interview_reminders (application_id, reminder_type)\nVALUES ($1, $2)\nON CONFLICT (application_id, reminder_type) DO NOTHING;",
+        "options": {
+          "queryReplacement": "={{ [$('Check Existing Reminder').item.json.id, $('Check Existing Reminder').item.json.reminder_type] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        944,
+        -656
+      ],
+      "id": "83fddbba-53b0-4bfb-9322-c3ad63986090",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "Y8EP6u0DBBdeAYYp",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n    ja.id,\n    ja.company,\n    ja.position,\n    ja.interview_date,\n    ja.interview_time,\n    $2::VARCHAR AS reminder_type,\n    EXISTS (\n        SELECT 1\n        FROM interview_reminders ir\n        WHERE ir.application_id = ja.id\n          AND ir.reminder_type = $2\n    ) AS already_sent\nFROM job_applications ja\nWHERE ja.id = $1;",
+        "options": {
+          "queryReplacement": "={{ [$json.id, $json.reminder_type] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        368,
+        -416
+      ],
+      "id": "18ed5b72-c431-449b-854d-5e1e12417313",
+      "name": "Check Existing Reminder",
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "Y8EP6u0DBBdeAYYp",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Determine Required Reminders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Determine Required Reminders": {
+      "main": [
+        [
+          {
+            "node": "Check Existing Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reminder Not sent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Existing Reminder": {
+      "main": [
+        [
+          {
+            "node": "Reminder Not sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e5e6b37f-1542-4af5-b655-76641d74a0fe",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c70388e69a2b8f6f56986036d555430fab1f261b87c8d017087bbceff9d371a7"
+  },
+  "nodeGroups": [],
+  "id": "ReXodrd8piIM9ekQ",
+  "tags": []
+}
